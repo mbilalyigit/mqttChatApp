@@ -13,8 +13,10 @@ def onConnect(client, userdata, flags, rc):
 
 # The callback for when a PUBLISH message is received from the server.
 def onMessage(client, userdata, msg):
-    if("chatApp/id{}".format(id) in msg.topic):
+    if "chatApp/id{}".format(id) in msg.topic:
         lastMessageText['text'] = msg.payload
+    elif msg.topic == "chatApp/idList":
+        client.publish("chatApp/idRsp", id)
 
 def onEnter(event):
     client.publish("chatApp/subApp", event.widget.get())
