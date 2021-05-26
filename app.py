@@ -1,15 +1,11 @@
 import paho.mqtt.client as mqttClient
-from tkinter import Tk, Label , Frame , Entry , TOP, BOTTOM, LEFT, RIGHT
+from tkinter import Tk, Label , Frame , Entry , Button, TOP, BOTTOM, LEFT, RIGHT, Toplevel
+from ipScanner import activeList as devices
 
-id = "0987"
+id = "0000"
 
-# The callback for when the client receives a CONNACK response from the server.
 def onConnect(client, userdata, flags, rc):
-    print("Connected with result code "+str(rc))
-
-    # Subscribing in on_connect() means that if we lose the connection and
-    # reconnect then subscriptions will be renewed.
-    client.subscribe("$SYS/#")
+    client.subscribe("chatApp/#")
 
 # The callback for when a PUBLISH message is received from the server.
 def onMessage(client, userdata, msg):
@@ -26,11 +22,14 @@ client = mqttClient.Client()
 client.on_connect = onConnect
 client.on_message = onMessage
 client.connect("localhost", 1883, 60)
-client.subscribe("chatApp/#")
 client.loop_start()
 
 
 root = Tk()
+
+settingsButton = Button(root, text="Settings")
+settingsButton.pack(side=TOP)
+
 topFrame = Frame(root)
 topFrame.pack(side=TOP)
 lastMessageHeader = Label(topFrame, text="Last Message:")
@@ -46,5 +45,6 @@ messageText = Entry(buttomFrame)
 messageText.pack(side=LEFT)
 messageText.bind('<Return>', onEnter)
 
+print(devices)
 
 root.mainloop()
