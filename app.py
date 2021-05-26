@@ -6,9 +6,14 @@ from datetime import datetime
 random.seed(datetime.now().second + datetime.now().microsecond)
 id_int = random.randint(0, 9999)
 print("RNG ID is: " + "{}".format(id_int))
-id = "{}".format(id_int)
+id = str(id_int).zfill(4)
+
+print(id)
 
 from ipScanner import activeList as devices
+
+knownDevices  = []
+
 
 def onConnect(client, userdata, flags, rc):
     print("rc: " + "{}".format(rc))
@@ -16,18 +21,28 @@ def onConnect(client, userdata, flags, rc):
 
 # The callback for when a PUBLISH message is received from the server.
 def onMessage(client, userdata, msg):
+    payload = str(msg.payload.decode("utf-8"))
     if "chatApp/id{}".format(id) in msg.topic:
-        lastMessageText['text'] = msg.payload
+        lastMessageText['text'] = payload
     elif "chatApp/subApp" in msg.topic:
-        lastMessageText['text'] = msg.payload
+        lastMessageText['text'] = payload
     elif msg.topic == "chatApp/idList":
-        client.publish("chatApp/idRsp", id)
+        if(id != payload):
+            client.publish("chatApp/idRsp", id)
+    elif msg.topic == "chatApp/idRsp":
+        print(payload)
+        if(id not in str(payload)):
+            if(str(payload) not in knownDevices):
+                knownDevices.append(str(payload))
+                print("Known devices: ", end="")
+                print(knownDevices)
+                client.publish("chatApp/idRsp", id)
     
 
 def onEnter(event):
     msg =   event.widget.get()
-    print(msg)
-    client.publish("chatApp/subApp", msg)
+    if(knownDevices):
+        client.publish("chatApp/id{}".format(knownDevices[0]), msg)
     event.widget.delete(0, 'end')
 
 client = mqttClient.Client()
@@ -48,7 +63,7 @@ else:
             print("Couldn't connect to mqtt broker at -> " + device)
 
 print("Waiting for Cooldown...")
-time.sleep(1)
+time.sleep(2)
 
 #TODO select device from list; for now, go with first one
 if(chatDeviceList):
@@ -84,5 +99,7 @@ messageLabel.pack(side=LEFT)
 messageText = Entry(buttomFrame)
 messageText.pack(side=LEFT)
 messageText.bind('<Return>', onEnter)
+
+client.publish("chatApp/idList", id)
 
 root.mainloop()

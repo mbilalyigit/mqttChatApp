@@ -1,4 +1,6 @@
 ## [0.0.2] - 2021.05.26
+- requirements.txt added
+- peer to peer connection added
 - remote connection on LAN added
 - ipScanner added
 
