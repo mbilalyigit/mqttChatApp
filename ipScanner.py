@@ -33,9 +33,7 @@ while pingList:
                 activeCount = activeCount + 1
                 print("\r                                ", end='\r')
                 print("Active IP found: " + ip)
-    time.sleep(.1)
-
-
+    time.sleep(.2)
 
 devnull.close()
 

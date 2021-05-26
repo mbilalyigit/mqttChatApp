@@ -1,4 +1,5 @@
 ## [0.0.2] - 2021.05.26
+- remote connection on LAN added
 - ipScanner added
 
 ## [0.0.1] - 2021.05.26
