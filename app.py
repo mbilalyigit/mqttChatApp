@@ -76,6 +76,7 @@ else:
     print("Connectiong to Local MQTT broker")
     try:
         client.connect("localhost", 1883, 60)
+        client.loop_start()
     except:
         print("Local MQTT broker is down.\r\n quitting...")
         quit()

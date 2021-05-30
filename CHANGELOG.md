@@ -1,4 +1,6 @@
 ## [0.0.2] - 2021.05.26
+- install.sh added
+- localhost mqtt loop_start() added
 - requirements.txt added
 - peer to peer connection added
 - remote connection on LAN added
